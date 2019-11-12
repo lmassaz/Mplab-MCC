@@ -32,6 +32,11 @@ void convertirFecha(void){
     anio = ((Fecha[4]<<4)+ Fecha[5]);
 }
 
+int BCD_2_DEC (int to_convert) 
+{ 
+   return (to_convert >> 4) * 10 + (to_convert & 0x0F); 
+}
+
 void main(void)
 {
     // Initialize the device
@@ -42,13 +47,13 @@ void main(void)
     // Use the following macros to:
 
     // Enable the Global Interrupts
-    INTERRUPT_GlobalInterruptEnable();
+    //INTERRUPT_GlobalInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
 
     // Enable the Peripheral Interrupts
-    INTERRUPT_PeripheralInterruptEnable();
+    //INTERRUPT_PeripheralInterruptEnable();
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
@@ -58,23 +63,29 @@ void main(void)
     //--------------------------------------------------------------------------
     //HORA: SEGUNDOS-MINUTOS-HORAS-----------------------------------------------
     printf("comunicación serial");
-    convertirHora();
+    
+    
 //    i2c1_driver_setAddr(0xD0);
     
 //ESCRIBIR
-    //        I2C_start();            //Incia comunicaión I2C
-//    I2C_write(0xD0);        //Escoje dirección del reloj
-//    I2C_write(0x00);        //Posición de los segundos
-//    I2C_write(sec);         //Posición donde va leer
-//    I2C_write(min);         //Posición donde va leer
-//    I2C_write(hora);        //Posición donde va leer
-//    I2C_stop();             //Detiene la comunicaión I2C
-//    
-    
+
+   convertirHora(); 
     i2c1_driver_start(); //inicia la comunicación i2c
     i2c1_driver_TXData(0xD0);
     i2c1_driver_TXData(0x00);
     i2c1_driver_TXData(sec);
+    i2c1_driver_TXData(min);
+    i2c1_driver_TXData(hora);
+    i2c1_driver_stop();
+    
+    convertirFecha();
+     i2c1_driver_start(); //inicia la comunicación i2c
+    i2c1_driver_TXData(0xD0);
+    i2c1_driver_TXData(0x04);
+    i2c1_driver_TXData(dia);
+    i2c1_driver_TXData(mes);
+    i2c1_driver_TXData(anio);
+    i2c1_driver_stop();
     
  //LEER  
 //       I2C_start();            //Incia comunicaión I2C
@@ -99,13 +110,22 @@ void main(void)
         i2c1_driver_restart(); //Reiniciala comunicación I2C
         i2c1_driver_TXData(0xD1);
         i2c1_driver_startRX();
-        sec= i2c1_driver_getRXData();
+        sec= i2c1_driver_getRXData; 
+        i2c1_driver_sendACK;
+        min= BCD_2_DEC(i2c1_driver_getRXData);        
+        i2c1_driver_sendACK;
+        hora= BCD_2_DEC(i2c1_driver_getRXData);
+        i2c1_driver_sendACK;
         
-//        (dia>>4)+0x30;
-//        (dia & 0x0F)+0x3;
+        i2c1_driver_sendNACK();
+        i2c1_driver_stop();
         
+        printf("segundos : %u \r\n", sec); 
+        printf("minutos : %u \r\n", min); 
+        printf("horas : %u \r\n", hora); 
+          
         
-        
+        __delay_ms(100);
     }
 }
 /**
