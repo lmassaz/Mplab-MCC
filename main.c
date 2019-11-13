@@ -1,77 +1,42 @@
 
 #include "mcc_generated_files/mcc.h"
-uint8_t sec, min, hora;
-uint8_t dia, mes, anio;
+uint8_t sec, min, hour, date, month, year;
 
-char Hora[] = "105845";
-char Fecha[] = "200319";
+char Hora[] = "000000";
+char Fecha[] = "DATE:  /  /20 ";
 
-//
-//char Dec2BCD (char val)
-//{
-//  char res;
-//  res = (val/10) << 4;
-//  res = res | (val % 10);
-//  return res;
-//}
+void convertirHora(void){
+    
+    for(uint8_t i=0; i<7; i++){
+        Hora[i] &= 0x0F;
+    }
+    hour = ((Hora[0]<<4)+ Hora[1]);
+    min = ((Hora[2]<<4)+ Hora[3]);
+    sec = ((Hora[4]<<4)+ Hora[5]);
+}
 
-
-//void convertirHora(void){
-//    
-//    for(uint8_t i=0; i<7; i++){
-//        Hora[i] &= 0x0F;
-//    }
-//    hora = ((Hora[0]<<4)+ Hora[1]);
-//    min = ((Hora[2]<<4)+ Hora[3]);
-//    sec = ((Hora[4]<<4)+ Hora[5]);
-//}
-//
-//void convertirFecha(void){
-//    
-//    for(uint8_t i=0; i<7; i++){
-//        Fecha[i] &= 0x0F;
-//    }
-//    
-//    dia = ((Fecha[0]<<4)+ Fecha[1]);
-//    mes = ((Fecha[2]<<4)+ Fecha[3]);
-//    anio = ((Fecha[4]<<4)+ Fecha[5]);
-//}
-//
-//primer valor
 unsigned char MSB(unsigned char x)
 {
-return ((x >> 4) + 0x30);
+return ((x >> 4));
  }
-//segundo valor
+
 unsigned char LSB(unsigned char x)
  {
- return ((x & 0x0F) + 0x30);
+ return (x & 0x0F);
 }
-//
-////void BCDtoDecimal (char val)
-////{
-////  char res;
-////  res = (val & 0x0F) + ((val & 0xF0)>>4)*10;
-////  return res;
-////}
-//
-//int BCD_2_DEC (int to_convert) 
-//{ 
-//   return (to_convert >> 4) * 10 + (to_convert & 0x0F); 
-//}
 
+void enviar_hora(void)
+{
+ 
+   i2c1_driver_start();       //inicia la comunicación i2c
+   i2c1_driver_TXData(0xD0);  //Dirección i2c del DS3231, escritura.
+   i2c1_driver_TXData(0x00);  //Dirección de donde quiero empezar a escribir (segundos)
+   i2c1_driver_TXData(sec);   //
+   i2c1_driver_TXData(min);
+   i2c1_driver_TXData(hour);
+   i2c1_driver_stop(); 
+}
 
-//void enviar_hora(void)
-//{
-//   i2c1_driver_start(); //inicia la comunicación i2c
-//    i2c1_driver_TXData(0xD0);
-//    i2c1_driver_TXData(0x00);
-//    i2c1_driver_TXData(sec);
-//    i2c1_driver_TXData(min);
-//    i2c1_driver_TXData(hora);
-//    i2c1_driver_stop(); 
-//}
-//
 //void enviar_fecha(void)
 //{
 //    i2c1_driver_start(); //inicia la comunicación i2c
@@ -83,36 +48,68 @@ unsigned char LSB(unsigned char x)
 //    i2c1_driver_stop(); 
 //    
 //}
+
 void leer_hora(void)
 {
     i2c1_driver_start(); //inicia la comunicación i2c
     i2c1_driver_TXData(0xD0); //Dirección i2c RTC escritura
     i2c1_driver_TXData(0x00);  //Dirección de los segundos.
     i2c1_driver_restart(); //Reiniciala comunicación I2C
-    
-    i2c1_driver_TXData(0xD1);  //Dirección i2c lectura
+//        
+   
     i2c1_driver_startRX();  
-    
-    sec= i2c1_driver_getRXData(); //resultado en BCD
-    unsigned int vHora = MSB(sec);
-    unsigned int vvHora= LSB(sec);
-//     Hora[2]= MSB(min);
-//     Hora[3]= LSB(min);
-//     Hora[4]= MSB(hora);
-//     Hora[5]= LSB(hora);
-    printf(" %c ",vHora);
-    printf(" %c ",vvHora);
-    printf(" : ");
-    
-//    i2c1_driver_sendACK; //envío condición de ACK para decirle al esclavo que envie el siguiente dato (es decir  la posición 01)
-    
-//    min= i2c1_driver_getRXData();        
-//    i2c1_driver_sendACK;
+//    mssp1_waitForEvent(0);   
+//    mssp1_clearIRQ();  //espera para recibir o trasmitir 
+    i2c1_driver_TXData(0xD1);  //Dirección i2c ds3231, lectura
+//    mssp1_waitForEvent(0);
+//    mssp1_clearIRQ();
 //    
-//    hora= i2c1_driver_getRXData();
+
+           
+    i2c1_driver_startRX();  
+//    mssp1_waitForEvent(0);   
+//    mssp1_clearIRQ();  //espera para recibir o trasmitir
+    sec= i2c1_driver_getRXData(); //resultado en BCD
+    i2c1_driver_sendACK; //envío condición de ACK para decirle al esclavo que envie el siguiente dato (es decir  la posición 01)
+//    mssp1_waitForEvent(0);
+//    mssp1_clearIRQ();
+    
+
+      
+    i2c1_driver_startRX();  
+//    mssp1_waitForEvent(0);   
+//    mssp1_clearIRQ();  //espera para recibir o trasmitir
+    min= i2c1_driver_getRXData();        
+    i2c1_driver_sendACK;
+//    mssp1_waitForEvent(0);
+//   mssp1_clearIRQ();   
+    
+
+    
+    i2c1_driver_startRX();  
+//    mssp1_waitForEvent(0);   
+//    mssp1_clearIRQ();  //espera para recibir o trasmitir 
+    hour= i2c1_driver_getRXData();
+    i2c1_driver_sendACK;
     i2c1_driver_sendNACK();  //condición de no ACK para que no siga mandando
+//    mssp1_waitForEvent(0);
+//    mssp1_clearIRQ();
+    
     i2c1_driver_stop();
         
+   
+//    printf(" %u ",MSB(sec));
+    printf(" %u ",sec);
+    printf(" %u ",LSB(sec));
+    printf(" : ");
+    printf(" %u ",MSB(min));
+    printf(" %u ",LSB(min));
+    printf(" : "); 
+    printf(" %u ",MSB(hour));
+    printf(" %u ",LSB(hour));
+    
+    printf(" \r\n ",LSB(hour));
+    
 //    Hora[0]= MSB(sec);
 //    Hora[1]= LSB(sec);
 //    Hora[2]= MSB(min);
@@ -165,31 +162,19 @@ void main(void)
     
     i2c1_driver_open(); //abrimos el puerto i2c
          
-    printf("comunicación serial \r\n");
+    printf("DS3231 \r\n");
       
 //    i2c1_driver_setAddr(0xD0);
 
-//    convertirHora(); 
-    //enviar_hora();
+    convertirHora(); 
+    enviar_hora();
     
-//    convertirFecha();
-    //enviar_fecha();
+    printf("lectura \r\n");
     
-  // printf("escritura exitosa  \r\n");
-     
     while (1)
-    {
-     leer_hora();
- //    printf("Segundos : ", Hora);
-////    printf(Hora);
-   
-    printf("\r\n");
-    
-     
+    { 
+        leer_hora();     
      __delay_ms(1000);
-     
+    
     }
 }
-/**
- End of File
-*/
