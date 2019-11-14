@@ -100,7 +100,7 @@ void leer_hora(void)
         
    
 //    printf(" %u ",MSB(sec));
-    printf(" %u ",sec);
+    printf(" %u ",MSB(sec));
     printf(" %u ",LSB(sec));
     printf(" : ");
     printf(" %u ",MSB(min));
@@ -109,7 +109,7 @@ void leer_hora(void)
     printf(" %u ",MSB(hour));
     printf(" %u ",LSB(hour));
     
-    printf(" \r\n ",LSB(hour));
+    printf(" \r\n ");
     
 //    Hora[0]= MSB(sec);
 //    Hora[1]= LSB(sec);
