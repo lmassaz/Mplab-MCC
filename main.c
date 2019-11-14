@@ -11,24 +11,19 @@ void convertirHora(void){
     for(uint8_t i=0; i<7; i++){
         Hora[i] &= 0x0F;
     }
-    hour = ((Hora[0]<<4)+ Hora[1]);
+    hour =((Hora[0]<<4)+ Hora[1]);
     min = ((Hora[2]<<4)+ Hora[3]);
     sec = ((Hora[4]<<4)+ Hora[5]);
 }
 
 unsigned char MSB(unsigned char x)
-{
-return ((x >> 4));
- }
+{return ((x >> 4));}
 
 unsigned char LSB(unsigned char x)
- {
- return (x & 0x0F);
-}
+{return (x & 0x0F);}
 
 void enviar_hora(void)
 {
- 
    i2c1_driver_start();       //inicia la comunicación i2c
    i2c1_driver_TXData(0xD0);  //Dirección i2c del DS3231, escritura.
    i2c1_driver_TXData(0x00);  //Dirección de donde quiero empezar a escribir (segundos)
@@ -56,58 +51,51 @@ void leer_hora(void)
     i2c1_driver_TXData(0xD0); //Dirección i2c RTC escritura
     i2c1_driver_TXData(0x00);  //Dirección de los segundos.
     i2c1_driver_restart(); //Reiniciala comunicación I2C
-//        
-   
-    i2c1_driver_startRX();  
-//    mssp1_waitForEvent(0);   
-//    mssp1_clearIRQ();  //espera para recibir o trasmitir 
-    i2c1_driver_TXData(0xD1);  //Dirección i2c ds3231, lectura
-//    mssp1_waitForEvent(0);
-//    mssp1_clearIRQ();
-//    
+    
+    
+    i2c1_driver_TXData(0xD1); //Dirección i2c RTC escritura
 
-           
     i2c1_driver_startRX();  
-//    mssp1_waitForEvent(0);   
-//    mssp1_clearIRQ();  //espera para recibir o trasmitir
     sec= i2c1_driver_getRXData(); //resultado en BCD
-    i2c1_driver_sendACK; //envío condición de ACK para decirle al esclavo que envie el siguiente dato (es decir  la posición 01)
+    mssp1_waitForEvent(0);   
+    mssp1_clearIRQ();  //espera para recibir o trasmitir 
 //    mssp1_waitForEvent(0);
-//    mssp1_clearIRQ();
-    
-
-      
-    i2c1_driver_startRX();  
+//    mssp1_clearIRQ();          
+//    i2c1_driver_startRX();  
 //    mssp1_waitForEvent(0);   
 //    mssp1_clearIRQ();  //espera para recibir o trasmitir
-    min= i2c1_driver_getRXData();        
-    i2c1_driver_sendACK;
-//    mssp1_waitForEvent(0);
-//   mssp1_clearIRQ();   
-    
 
-    
-    i2c1_driver_startRX();  
-//    mssp1_waitForEvent(0);   
-//    mssp1_clearIRQ();  //espera para recibir o trasmitir 
-    hour= i2c1_driver_getRXData();
-    i2c1_driver_sendACK;
-    i2c1_driver_sendNACK();  //condición de no ACK para que no siga mandando
+//    i2c1_driver_sendACK; //envío condición de ACK para decirle al esclavo que envie el siguiente dato (es decir  la posición 01)
 //    mssp1_waitForEvent(0);
-//    mssp1_clearIRQ();
-    
+//    mssp1_clearIRQ(); 
+      
+//    i2c1_driver_startRX();  
+////    mssp1_waitForEvent(0);   
+////    mssp1_clearIRQ();  //espera para recibir o trasmitir
+//    min= i2c1_driver_getRXData();        
+//    i2c1_driver_sendACK;
+////    mssp1_waitForEvent(0);
+////   mssp1_clearIRQ();   
+//       
+//    i2c1_driver_startRX();  
+////    mssp1_waitForEvent(0);   
+////    mssp1_clearIRQ();  //espera para recibir o trasmitir 
+//    hour= i2c1_driver_getRXData();
+    i2c1_driver_sendACK;
+//    i2c1_driver_sendNACK();  //condición de no ACK para que no siga mandando
+//    mssp1_waitForEvent(0);
+//    mssp1_clearIRQ();  
     i2c1_driver_stop();
-        
-   
+          
 //    printf(" %u ",MSB(sec));
     printf(" %u ",MSB(sec));
     printf(" %u ",LSB(sec));
-    printf(" : ");
-    printf(" %u ",MSB(min));
-    printf(" %u ",LSB(min));
-    printf(" : "); 
-    printf(" %u ",MSB(hour));
-    printf(" %u ",LSB(hour));
+//    printf(" : ");
+//    printf(" %u ",MSB(min));
+//    printf(" %u ",LSB(min));
+//    printf(" : "); 
+//    printf(" %u ",MSB(hour));
+//    printf(" %u ",LSB(hour));
     
     printf(" \r\n ");
     
@@ -167,8 +155,8 @@ void main(void)
       
 //    i2c1_driver_setAddr(0xD0);
 
-    convertirHora(); 
-    enviar_hora();
+//    convertirHora(); 
+//    enviar_hora();
     
     printf("lectura \r\n");
     
