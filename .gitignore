@@ -1,0 +1,6 @@
+Makefile
+MyConfig.mc3
+build/
+dist/
+mcc_generated_files/
+nbproject/
