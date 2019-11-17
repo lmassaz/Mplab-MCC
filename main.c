@@ -3,7 +3,7 @@
 #include "mcc_generated_files/mcc.h"
 uint8_t sec, min, hour, date, month, year;
 
-char Hora[] = "000015";
+char Hora[] = "130600";
 //char Fecha[] = "DATE:  /  /20 ";
 
 
@@ -86,6 +86,18 @@ void leer_hora(void)
     
     i2c1_driver_startRX();
     sec= i2c1_driver_getRXData(); //resultado en BCD
+    
+    i2c1_driver_sendACK; 
+    
+    i2c1_driver_startRX();
+    min= i2c1_driver_getRXData(); //resultado en BCD
+    
+    i2c1_driver_sendACK; 
+    
+    i2c1_driver_startRX();
+    hour= i2c1_driver_getRXData(); //resultado en BCD
+    
+    i2c1_driver_sendNACK; 
 
 //    i2c1_driver_sendNACK();  //condici?n de no ACK para que no siga mandando
   //  mssp1_waitForEvent(0);  // ES EL QUE PRESENTA PROBLEMA 
@@ -103,8 +115,10 @@ void leer_hora(void)
       
     Hora[0]=MSB(sec);
     Hora[1]=LSB(sec);
-    
-   
+    Hora[2]=MSB(min);
+    Hora[3]=LSB(min);
+    Hora[4]=MSB(hour);
+    Hora[5]=LSB(hour);
     
   
 //    mssp1_waitForEvent(0);
@@ -148,12 +162,6 @@ void leer_hora(void)
 //    printf(" %u ",LSB(hour));
 
 
-//    Hora[0]= MSB(sec);
-//    Hora[1]= LSB(sec);
-//    Hora[2]= MSB(min);
-//    Hora[3]= LSB(min);
-//    Hora[4]= MSB(hora);
-//    Hora[5]= LSB(hora);
 
     printf("Hora :");
     printf(Hora);
@@ -216,7 +224,8 @@ void main(void)
     { 
      leer_hora();  
 //     printf("%s\r\n",sec);
-     printf("hecho \r\n");
+//     printf("hecho \r\n");
+ 
      __delay_ms(1000);
     }
 }
