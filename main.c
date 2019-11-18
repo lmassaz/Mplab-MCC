@@ -1,5 +1,5 @@
 
-//"HOLA"..........................
+//"HOLA estoy editando desde otro pc"..........................
 #include "mcc_generated_files/mcc.h"
 uint8_t sec, min, hour, date, month, year;
 
@@ -25,11 +25,11 @@ unsigned char LSB(unsigned char x)
 
 void enviar_hora(void)
 {
-   i2c1_driver_start();       //inicia la comunicaci髇 i2c
-   i2c1_driver_TXData(0xD0);  //Direcci髇 i2c del DS3231, escritura.
+   i2c1_driver_start();       //inicia la comunicaci贸n i2c
+   i2c1_driver_TXData(0xD0);  //Direcci贸n i2c del DS3231, escritura.
    mssp1_waitForEvent(0);
     mssp1_clearIRQ(); 
-   i2c1_driver_TXData(0x00);  //Direcci髇 de donde quiero empezar a escribir (segundos)
+   i2c1_driver_TXData(0x00);  //Direcci贸n de donde quiero empezar a escribir (segundos)
    mssp1_waitForEvent(0);
     mssp1_clearIRQ(); 
    i2c1_driver_TXData(sec);   
@@ -53,10 +53,10 @@ void enviar_hora(void)
 
 //void enviar_fecha(void)
 //{
-//    i2c1_driver_start(); //inicia la comunicaci髇 i2c
-//    i2c1_driver_TXData(0xD0);  //Direcci髇 i2c RTC escritura
-//    i2c1_driver_TXData(0x04);  //Direcci髇 de los d韆s.
-//    i2c1_driver_TXData(dia);   //escribir d韆
+//    i2c1_driver_start(); //inicia la comunicaci贸n i2c
+//    i2c1_driver_TXData(0xD0);  //Direcci贸n i2c RTC escritura
+//    i2c1_driver_TXData(0x04);  //Direcci贸n de los d铆as.
+//    i2c1_driver_TXData(dia);   //escribir d铆a
 //    i2c1_driver_TXData(mes);   //escribir mes
 //    i2c1_driver_TXData(anio);  //escribir anio
 //    i2c1_driver_stop(); 
@@ -165,11 +165,11 @@ void leer_hora(void)
 //void leer_fecha(void)
 //{
 //    
-//    i2c1_driver_start(); //inicia la comunicaci髇 i2c
-//    i2c1_driver_TXData(0xD0); //Direcci髇 i2c RTC escritura
-//    i2c1_driver_TXData(0x04);  //Direcci髇 de los segundos.
-//    i2c1_driver_restart(); //Reiniciala comunicaci髇 I2C
-//    i2c1_driver_TXData(0xD1);  //Direcci髇 i2c lectura
+//    i2c1_driver_start(); //inicia la comunicaci贸n i2c
+//    i2c1_driver_TXData(0xD0); //Direcci贸n i2c RTC escritura
+//    i2c1_driver_TXData(0x04);  //Direcci贸n de los segundos.
+//    i2c1_driver_restart(); //Reiniciala comunicaci贸n I2C
+//    i2c1_driver_TXData(0xD1);  //Direcci贸n i2c lectura
 //    i2c1_driver_startRX();  
 ////    dia= i2c1_driver_getRXData; 
 //    i2c1_driver_sendACK;
